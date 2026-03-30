@@ -30,7 +30,7 @@ const Page = () => {
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const user = await registerUser(email, password, name);
+      const user = await registerUser(email, password);
 
       // Insert in the firestore
       try {
