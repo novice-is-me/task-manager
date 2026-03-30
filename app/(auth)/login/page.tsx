@@ -6,6 +6,9 @@ import { Field, FieldLabel, FieldSeparator } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Chrome, Github, Lock, LogIn, Mail } from "lucide-react";
 import type { LoginFormData } from "@/types/form.types";
+import { authWithGoogle, loginUser } from "@/lib/auth";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const Page = () => {
   const [email, setEmail] = useState<LoginFormData["email"]>("");
@@ -13,16 +16,47 @@ const Page = () => {
   const [confirmPassword, setConfirmPassword] =
     useState<LoginFormData["confirmPassword"]>("");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const router = useRouter();
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("Confirm Password:", confirmPassword);
+    try {
+      const user = await loginUser(email, password);
+
+      console.log("Logged in user:", user);
+      return user;
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
+
+  const handleGoogleLogin = async (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+
+    try {
+      const { user, isNewUser } = await authWithGoogle();
+
+      // Make sure to handle the case where user is not yet registered in Firestore
+      if (isNewUser) {
+        await user.delete();
+        sessionStorage.setItem(
+          "flash_message",
+          "Please create an account first.",
+        );
+        router.push("/register");
+        return;
+      }
+
+      console.log("Google logged in user:", user);
+      return user;
+    } catch (error) {
+      console.error("Google login failed:", error);
+    }
   };
   return (
     <section className=" h-screen flex items-center justify-center bg-auth">
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleLogin}
         className=" border border-border p-8 rounded-lg w-full max-w-md space-y-5 bg-white shadow-xl"
       >
         {/* Title */}
@@ -78,18 +112,17 @@ const Page = () => {
             <LogIn className="size-4" />
             Login
           </Button>
+          <Link className=" text-blue-400 text-sm underline" href="/register">
+            Don't have an account? Create an account
+          </Link>
         </div>
         {/* Options */}
         <div className="space-y-4">
           <FieldSeparator>Or Login with</FieldSeparator>
-          <div className="space-y-2 mt-4">
+          <div className="space-y-2 mt-4" onClick={handleGoogleLogin}>
             <Button variant="outline" className=" w-full py-6">
               <Chrome className="size-4" />
-              Login with Google
-            </Button>
-            <Button variant="outline" className=" w-full py-6">
-              <Github className="size-4" />
-              Login with Github
+              Google
             </Button>
           </div>
         </div>
