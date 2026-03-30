@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel, FieldSeparator } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -17,15 +17,12 @@ const Page = () => {
   const [confirmPassword, setConfirmPassword] =
     useState<RegisterFormData["confirmPassword"]>("");
 
-  const [flash, setFlash] = useState("");
-
-  useEffect(() => {
+  const [flash] = useState(() => {
+    if (typeof window === "undefined") return "";
     const msg = sessionStorage.getItem("flash_message");
-    if (msg) {
-      sessionStorage.removeItem("flash_message");
-      setFlash(msg);
-    }
-  }, [setFlash]);
+    if (msg) sessionStorage.removeItem("flash_message");
+    return msg ?? "";
+  });
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
