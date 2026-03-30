@@ -50,7 +50,7 @@ export const authWithGoogle = async () => {
     const isNewUser = additionalInfo?.isNewUser;
 
     return { user, isNewUser };
-  } catch (error: any) {
+  } catch (error) {
     throw error;
   }
 };

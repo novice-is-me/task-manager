@@ -113,7 +113,7 @@ const Page = () => {
             Login
           </Button>
           <Link className=" text-blue-400 text-sm underline" href="/register">
-            Don't have an account? Create an account
+            {"Don't have an account? Create an account"}
           </Link>
         </div>
         {/* Options */}
