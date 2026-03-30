@@ -17,15 +17,16 @@ const Page = () => {
   const [confirmPassword, setConfirmPassword] =
     useState<RegisterFormData["confirmPassword"]>("");
 
-  const [flash, setFlash] = useState<string>("");
-
-  useEffect(() => {
+  const [flash, setFlash] = useState(() => {
     const msg = sessionStorage.getItem("flash_message");
+
     if (msg) {
-      setFlash(msg);
       sessionStorage.removeItem("flash_message");
+      return msg;
     }
-  }, []);
+
+    return "";
+  });
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
