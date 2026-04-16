@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel, FieldSeparator } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,11 @@ const Page = () => {
   const [password, setPassword] = useState<RegisterFormData["password"]>("");
   const [confirmPassword, setConfirmPassword] =
     useState<RegisterFormData["confirmPassword"]>("");
+
+  const passwordError =
+    password && confirmPassword && password !== confirmPassword
+      ? "Passwords do not match"
+      : "";
 
   const [flash] = useState(() => {
     if (typeof window === "undefined") return "";
@@ -111,7 +116,7 @@ const Page = () => {
             <div className="relative">
               <Mail className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
               <Input
-                type="text"
+                type="email"
                 placeholder="Enter your email"
                 className="pl-9"
                 onChange={(e) => setEmail(e.target.value)}
@@ -145,8 +150,13 @@ const Page = () => {
               </div>
             </Field>
           </div>
-
-          <Button className=" w-full py-6">
+          {passwordError && (
+            <div className=" text-red-600 text-sm">{passwordError}</div>
+          )}
+          <Button
+            className=" w-full py-6"
+            disabled={!email || !password || !confirmPassword}
+          >
             <LogIn className="size-4" />
             Register
           </Button>

@@ -15,7 +15,6 @@ const Page = () => {
   const [password, setPassword] = useState<LoginFormData["password"]>("");
   const [confirmPassword, setConfirmPassword] =
     useState<LoginFormData["confirmPassword"]>("");
-
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -53,6 +52,7 @@ const Page = () => {
       console.error("Google login failed:", error);
     }
   };
+
   return (
     <section className=" h-screen flex items-center justify-center bg-auth">
       <form
@@ -73,7 +73,7 @@ const Page = () => {
             <div className="relative">
               <Mail className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
               <Input
-                type="text"
+                type="email"
                 placeholder="Enter your email"
                 className="pl-9"
                 onChange={(e) => setEmail(e.target.value)}
@@ -108,7 +108,10 @@ const Page = () => {
             </Field>
           </div>
 
-          <Button className=" w-full py-6">
+          <Button
+            className="w-full py-6"
+            disabled={!email || !password || !confirmPassword}
+          >
             <LogIn className="size-4" />
             Login
           </Button>
