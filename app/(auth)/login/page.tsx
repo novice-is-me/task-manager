@@ -9,6 +9,7 @@ import type { LoginFormData } from "@/types/form.types";
 import { authWithGoogle, loginUser } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { toast } from "sonner";
 
 const Page = () => {
   const [email, setEmail] = useState<LoginFormData["email"]>("");
@@ -23,6 +24,11 @@ const Page = () => {
       const user = await loginUser(email, password);
 
       console.log("Logged in user:", user);
+      router.push("/");
+
+      toast.success(`Welcome back, ${user.email}!`, {
+        position: "top-right",
+      });
       return user;
     } catch (error) {
       console.error("Login failed:", error);
@@ -43,11 +49,18 @@ const Page = () => {
           "Please create an account first.",
         );
         router.push("/register");
+        toast.error("Please create an account first.", {
+          position: "top-right",
+        });
         return;
+      } else {
+        console.log("Google logged in user:", user);
+        router.push("/");
+        toast.success(`Welcome back, ${user.email}!`, {
+          position: "top-right",
+        });
+        return user;
       }
-
-      console.log("Google logged in user:", user);
-      return user;
     } catch (error) {
       console.error("Google login failed:", error);
     }

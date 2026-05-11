@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Roboto, Podkova } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "sonner";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -25,9 +26,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${roboto.variable} ${podkova.variable}`}>
+    <html
+      lang="en"
+      className={`${roboto.variable} ${podkova.variable}`}
+      suppressHydrationWarning
+    >
       <body className="antialiased">
-        {children}
+        <main>{children}</main>
+        <Toaster />
       </body>
     </html>
   );
