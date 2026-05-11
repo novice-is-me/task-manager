@@ -9,8 +9,12 @@ import { authWithGoogle, registerUser } from "@/lib/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const Page = () => {
+  const router = useRouter();
+
   const [name, setName] = useState<RegisterFormData["name"]>("");
   const [email, setEmail] = useState<RegisterFormData["email"]>("");
   const [password, setPassword] = useState<RegisterFormData["password"]>("");
@@ -43,6 +47,14 @@ const Page = () => {
           created_at: new Date(),
         });
 
+        router.push("/");
+
+        toast.success(
+          `Welcome, ${user.email}! Your account has been created.`,
+          {
+            position: "top-right",
+          },
+        );
         return user;
       } catch (error) {
         console.error("Error adding user to Firestore:", error);
@@ -69,6 +81,14 @@ const Page = () => {
           name: user.displayName || name,
           created_at: new Date(),
         });
+
+        router.push("/");
+        toast.success(
+          `Welcome, ${user.email}! Your account has been created with Google.`,
+          {
+            position: "top-right",
+          },
+        );
       } catch (error) {
         console.error("Error adding Google user to Firestore:", error);
       }
